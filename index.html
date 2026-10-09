@@ -1,0 +1,995 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A S Prajwal Bhat | FPGA, RTL and Embedded Systems</title>
+<meta name="description" content="A S Prajwal Bhat, Electronics and Communication Engineering student at BIT Bengaluru. Projects in FPGA, RTL, RISC-V and embedded systems.">
+<meta name="theme-color" content="#060d0a">
+<meta property="og:type" content="website">
+<meta property="og:title" content="A S Prajwal Bhat | FPGA, RTL and Embedded Systems">
+<meta property="og:description" content="A S Prajwal Bhat, Electronics and Communication Engineering student at BIT Bengaluru. Projects in FPGA, RTL, RISC-V and embedded systems.">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"A S Prajwal Bhat","jobTitle":"Electronics and Communication Engineering student","affiliation":{"@type":"CollegeOrUniversity","name":"Bangalore Institute of Technology"},"sameAs":["https://github.com/AS-Prajwal-Bhat","https://www.linkedin.com/in/a-s-prajwal-bhat-aa3717296","https://ieee-collabratec.ieee.org/app/p/ASPrajwalBhat1180865"]}</script>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>html{-webkit-text-size-adjust:100%}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: cinematic dark hero with a floating glass nav, then a pinned scroll section where the real SoC assembles block by block, then full-width glass project cards with spec panels, then the remaining portfolio sections. Substrate green, gold signal accent. */
+:root {
+  --bg: #060d0a;
+  --surface: #0d1b14;
+  --fg: #e8f0ea;
+  --muted: #95a99d;
+  --line: rgba(232, 240, 234, 0.14);
+  --glass: rgba(14, 26, 20, 0.55);
+  --glass-edge: rgba(255, 255, 255, 0.12);
+  --accent: #e3b34f;
+  --accent-fg: #1a1200;
+  --trace: rgba(96, 170, 135, 0.3);
+  --pulse: #f0c35e;
+  --glow1: rgba(60, 160, 115, 0.22);
+  --glow2: rgba(227, 179, 79, 0.12);
+  --ph: #ff9a6b;
+  --ph-bg: #2b1710;
+  --f-display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #edf2ee; --surface: #f9fbf9; --fg: #0e1c16; --muted: #50615a; --line: rgba(14, 28, 22, 0.16);
+    --glass: rgba(249, 251, 249, 0.66); --glass-edge: rgba(255, 255, 255, 0.85);
+    --accent: #8a5a00; --accent-fg: #ffffff; --trace: rgba(11, 93, 59, 0.24); --pulse: #b7791f;
+    --glow1: rgba(11, 107, 69, 0.16); --glow2: rgba(183, 121, 31, 0.15);
+    --ph: #b93a0b; --ph-bg: #fdeee6;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #edf2ee; --surface: #f9fbf9; --fg: #0e1c16; --muted: #50615a; --line: rgba(14, 28, 22, 0.16);
+  --glass: rgba(249, 251, 249, 0.66); --glass-edge: rgba(255, 255, 255, 0.85);
+  --accent: #8a5a00; --accent-fg: #ffffff; --trace: rgba(11, 93, 59, 0.24); --pulse: #b7791f;
+  --glow1: rgba(11, 107, 69, 0.16); --glow2: rgba(183, 121, 31, 0.15);
+  --ph: #b93a0b; --ph-bg: #fdeee6;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.6;
+  padding-inline: 0; padding-block: 0; overflow-x: hidden;
+}
+a { color: var(--accent); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, .blkg:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+p { margin: 0 0 12px; max-width: 65ch; }
+.wrap { width: 100%; max-width: 1232px; margin-inline: auto; padding-inline: 16px; }
+@media (min-width: 700px) { .wrap { padding-inline: 28px; } }
+
+/* Atmosphere: soft glows that drift with scroll, plus a faint engineering grid */
+.atmos { position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(60vmax 60vmax at 88% calc(12% - var(--sy, 0px) * 0.05), var(--glow1), transparent 62%),
+    radial-gradient(52vmax 52vmax at 4% calc(75% - var(--sy, 0px) * 0.03), var(--glow2), transparent 62%); }
+.atmos::after { content: ""; position: absolute; inset: 0; opacity: 0.5;
+  background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: linear-gradient(to bottom, #000, transparent 80%); mask-image: linear-gradient(to bottom, #000, transparent 80%); }
+
+.notice { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; text-align: center; padding: 6px 12px calc(6px + env(safe-area-inset-bottom, 0px)); background: var(--ph-bg); color: var(--ph); font-family: var(--f-mono); font-size: 11px; line-height: 1.4; border-top: 1px dashed var(--ph); }
+
+/* Floating glass nav */
+.nav-wrap { position: fixed; top: calc(env(safe-area-inset-top, 0px) + 18px); left: 0; right: 0; z-index: 20; pointer-events: none; padding-inline: 12px; }
+.nav { pointer-events: auto; position: relative; overflow: hidden; max-width: 1180px; margin-inline: auto; height: 60px; padding: 8px 10px 8px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  border: 1px solid var(--glass-edge); border-radius: 22px; background: var(--glass);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+  box-shadow: 0 18px 50px -20px rgba(0, 0, 0, 0.5), inset 0 1px 0 var(--glass-edge); }
+.brand { font-family: var(--f-display); font-weight: 700; font-size: 20px; letter-spacing: -0.03em; color: var(--fg); text-decoration: none; }
+.brand span { color: var(--accent); }
+.navlinks { display: none; gap: 2px; font-size: 13px; }
+.navlinks a, .mobile a { color: var(--muted); text-decoration: none; padding: 9px 12px; border-radius: 12px; transition: color 0.2s, background 0.2s; }
+.navlinks a:hover, .mobile a:hover { color: var(--fg); background: var(--glass-edge); }
+.navtools { display: flex; gap: 8px; align-items: center; }
+.theme, .menu { font-family: var(--f-mono); font-size: 12px; background: transparent; color: var(--fg); border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; cursor: pointer; }
+.theme:hover, .menu:hover { border-color: var(--accent); }
+.prog { position: absolute; left: 0; bottom: 0; height: 2px; width: 100%; background: var(--accent); transform-origin: left; transform: scaleX(var(--p, 0)); }
+.mobile { pointer-events: auto; max-width: 1180px; margin: 8px auto 0; display: grid; gap: 2px; padding: 8px; border: 1px solid var(--glass-edge); border-radius: 22px; background: var(--glass); -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px); }
+.mobile a { font-size: 15px; padding: 12px 14px; }
+@media (min-width: 940px) { .navlinks { display: flex; } .menu { display: none; } .mobile { display: none !important; } }
+
+/* Hero */
+.hero { position: relative; overflow: hidden; padding: clamp(150px, 20vw, 190px) 0 clamp(44px, 7vw, 88px); border-bottom: 1px solid var(--line); }
+.hero canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none;
+  -webkit-mask-image: linear-gradient(100deg, transparent 4%, #000 68%); mask-image: linear-gradient(100deg, transparent 4%, #000 68%); }
+.hero-in { position: relative; z-index: 1; }
+.kicker { display: flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 20px; max-width: none; }
+.kicker::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 16px var(--accent); flex: none; }
+h1 { font-family: var(--f-display); font-weight: 700; font-size: clamp(54px, 11.5vw, 156px); line-height: 0.88; letter-spacing: -0.055em; margin: 0 0 28px; text-wrap: balance; }
+h1 em { font-style: normal; color: transparent; -webkit-text-stroke: 1.5px var(--muted); }
+.lead { font-size: clamp(17px, 2vw, 20px); line-height: 1.65; color: var(--muted); max-width: 58ch; margin-bottom: 28px; }
+.lead strong { color: var(--fg); font-weight: 600; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.btn { display: inline-block; background: var(--accent); color: var(--accent-fg); font-weight: 600; font-size: 15px; text-decoration: none; padding: 12px 20px; border-radius: 14px; border: 1px solid var(--accent); cursor: pointer; font-family: var(--f-body); }
+.btn.ghost { background: transparent; color: var(--fg); border-color: var(--muted); }
+.btn.ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn[aria-disabled="true"], .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.timing { margin-top: 44px; max-width: 700px; }
+.cap { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; max-width: none; }
+.timing .scroll { overflow-x: auto; }
+.timing svg { display: block; width: 100%; min-width: 440px; height: auto; }
+.sig { fill: none; stroke: var(--muted); stroke-width: 1.6; stroke-linejoin: round; }
+.sig.clk { stroke: var(--accent); }
+.sig.bus { stroke: var(--pulse); }
+.tl { fill: var(--muted); font: 400 11px var(--f-mono); }
+.tv { fill: var(--fg); font: 500 11px var(--f-mono); }
+
+.spec { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); border-bottom: 1px solid var(--line); background: var(--glass); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+.spec div { padding: 16px 20px; border-right: 1px solid var(--line); min-width: 0; }
+.spec dt { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.spec dd { margin: 4px 0 0; font-weight: 500; overflow-wrap: anywhere; }
+
+/* Pinned story: the SoC assembles as you scroll */
+.story { position: relative; min-height: 250vh; }
+.story-sticky { position: sticky; top: 0; height: 100svh; overflow: hidden; display: grid; align-items: center; padding-top: 110px; padding-bottom: 24px; }
+.rings { position: absolute; inset: 0; pointer-events: none; }
+.ring { position: absolute; left: 50%; top: 50%; border: 1px solid var(--line); border-radius: 50%; transform: translate(-50%, -50%); }
+.r1 { width: 38vmax; height: 38vmax; } .r2 { width: 60vmax; height: 60vmax; } .r3 { width: 84vmax; height: 84vmax; }
+.story-grid { position: relative; display: grid; gap: 20px; align-items: center; }
+@media (min-width: 940px) { .story-grid { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 56px; } }
+.story h2, .sechead h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(34px, 5.4vw, 72px); line-height: 0.98; letter-spacing: -0.04em; margin: 0 0 16px; text-wrap: balance; }
+.storytext { font-size: 16px; line-height: 1.6; color: var(--muted); min-height: 6.4em; max-width: 46ch; margin: 0 0 14px; }
+.storytext b { color: var(--fg); }
+.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; counter-reset: s; }
+.steps li { font-family: var(--f-mono); font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 12px; padding: 6px 12px; transition: color 0.3s, border-color 0.3s, background 0.3s; }
+.steps li::before { counter-increment: s; content: counter(s) "  "; color: var(--accent); }
+.steps li .d { display: none; }
+.steps li.cur { color: var(--fg); border-color: var(--accent); background: var(--glass); }
+.story-fig { min-width: 0; border: 1px solid var(--glass-edge); border-radius: 24px; background: var(--glass); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); padding: 10px; box-shadow: inset 0 1px 0 var(--glass-edge), 0 24px 60px -30px rgba(0, 0, 0, 0.6); }
+.story-fig svg { display: block; width: 100%; height: auto; }
+.blk { fill: var(--surface); stroke: var(--muted); stroke-width: 1.2; rx: 12px; ry: 12px; }
+.blk.hot { stroke: var(--accent); stroke-width: 1.6; }
+.blk.dash { stroke-dasharray: 5 4; fill: none; }
+.t1 { fill: var(--fg); font: 500 15px var(--f-mono); }
+.t2 { fill: var(--muted); font: 400 12px var(--f-mono); }
+.sg { opacity: 0.1; transform: translateY(10px); transition: opacity 0.6s ease, transform 0.6s ease; pointer-events: none; }
+.sg.on { opacity: 1; transform: none; pointer-events: auto; }
+.blkg { cursor: pointer; outline: none; }
+.blkg .blk { transition: stroke 0.2s, fill 0.2s; }
+.blkg:hover .blk, .blkg:focus-visible .blk { stroke: var(--accent); }
+.blkg.sel .blk { stroke: var(--accent); stroke-width: 2.4; fill: var(--glow2); }
+.wire { stroke: var(--accent); stroke-width: 1.6; fill: none; stroke-dasharray: 4 8; animation: flow 1.4s linear infinite; }
+.pkt { fill: var(--pulse); }
+.fignote { font-family: var(--f-mono); font-size: 11px; color: var(--muted); margin: 8px 4px 0; max-width: none; }
+.story.static { min-height: auto; }
+.story.static .story-sticky { position: static; height: auto; padding-block: 56px; }
+.story.static .steps { display: grid; gap: 10px; }
+.story.static .steps li { border-radius: 14px; padding: 12px 14px; }
+.story.static .steps li .d { display: block; color: var(--muted); font-family: var(--f-body); font-size: 14px; margin-top: 4px; }
+.story.static .sg { opacity: 1; transform: none; pointer-events: auto; }
+
+/* Sections */
+main { display: grid; gap: clamp(72px, 10vw, 128px); padding-block: clamp(64px, 9vw, 112px) 24px; }
+section { min-width: 0; scroll-margin-top: 110px; }
+.eyebrow { display: flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin: 0 0 12px; max-width: none; }
+.eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.sechead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 40px; margin-bottom: 36px; }
+.sechead h2 { margin: 0; max-width: 16ch; font-size: clamp(38px, 6.4vw, 84px); line-height: 0.95; }
+.sechead p { color: var(--muted); max-width: 36ch; margin: 0; }
+h3 { font-family: var(--f-display); font-weight: 600; font-size: clamp(26px, 3.4vw, 38px); line-height: 1.1; letter-spacing: -0.02em; margin: 0; text-wrap: balance; }
+.ph { border: 1px dashed var(--ph); background: var(--ph-bg); color: var(--ph); padding: 1px 6px; font-family: var(--f-mono); font-size: 13px; border-radius: 6px; }
+
+.glass { background: var(--glass); -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3); border: 1px solid var(--line); box-shadow: inset 0 1px 0 var(--glass-edge), 0 24px 60px -34px rgba(0, 0, 0, 0.6); transition: border-color 0.25s; }
+.glass:hover { border-color: var(--accent); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .glass, .spec, .story-fig, .nav, .mobile { background: var(--surface); } }
+
+.project { display: grid; gap: 28px; border-radius: 30px; padding: clamp(20px, 3.4vw, 40px); margin-bottom: 20px; }
+@media (min-width: 940px) { .project { grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 48px; align-items: center; } }
+.copy { display: grid; gap: 14px; min-width: 0; align-content: start; }
+.copy p { margin: 0; color: var(--muted); }
+.meta { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; padding: 0; margin: 0; list-style: none; }
+.tags li { font-family: var(--f-mono); font-size: 12px; border: 1px solid var(--line); padding: 3px 10px; border-radius: 10px; color: var(--muted); }
+.links2 { display: flex; flex-wrap: wrap; gap: 10px 16px; }
+.specs { margin: 0; display: grid; min-width: 0; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: var(--bg); }
+.specs div { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.specs div:last-child { border-bottom: 0; }
+.specs dt { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.specs dd { margin: 0; overflow-wrap: anywhere; }
+.fig { min-width: 0; overflow-x: auto; border: 1px solid var(--line); background: var(--bg); border-radius: 20px; padding: 10px; }
+.fig svg { display: block; width: 100%; min-width: 500px; height: auto; }
+.solid { stroke: var(--muted); stroke-width: 1.2; fill: none; }
+.arrow { fill: var(--accent); }
+
+.wavebox { aspect-ratio: 16 / 6; max-width: 100%; border: 1px dashed var(--ph); border-radius: 18px; background: var(--ph-bg); display: grid; place-items: center; padding: 16px; text-align: center; }
+.card { border-radius: 26px; padding: 24px; display: grid; gap: 12px; align-content: start; min-width: 0; margin-bottom: 20px; }
+.card p { margin: 0; color: var(--muted); }
+.card.empty { border-style: dashed; }
+.mini { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.mini .card { margin-bottom: 0; }
+
+.demo { border-radius: 30px; padding: clamp(18px, 3vw, 32px); margin-bottom: 20px; display: grid; gap: 18px; }
+.demohead { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: end; justify-content: space-between; }
+.demohead h3 { margin-top: 4px; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tab { font-family: var(--f-mono); font-size: 12px; background: transparent; color: var(--muted); border: 1px solid var(--line); border-radius: 10px; padding: 6px 12px; cursor: pointer; }
+.tab[aria-selected="true"] { color: var(--accent); border-color: var(--accent); }
+.tab:disabled { opacity: 0.6; cursor: default; }
+.panes { display: grid; gap: 16px; }
+@media (min-width: 800px) { .panes { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.panes > div { min-width: 0; }
+.pl { font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; max-width: none; }
+.code { margin: 0; min-height: 180px; max-height: 320px; overflow: auto; border: 1px solid var(--line); border-radius: 16px; background: var(--bg); padding: 14px; font: 400 13px/1.55 var(--f-mono); color: var(--fg); white-space: pre; }
+.code.empty { border-style: dashed; border-color: var(--ph); background: var(--ph-bg); color: var(--ph); white-space: pre-wrap; }
+
+.tools { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.tool { border-top: 2px solid var(--accent); padding-top: 14px; min-width: 0; }
+.tool h3 { font-size: 20px; margin-bottom: 10px; letter-spacing: 0; }
+.tool ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.tool li { font-family: var(--f-mono); font-size: 14px; color: var(--muted); padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+
+.timeline { list-style: none; margin: 0; padding: 0 0 0 20px; border-left: 1px solid var(--line); display: grid; }
+.timeline li { position: relative; padding: 0 0 26px 22px; display: grid; gap: 2px 24px; }
+.timeline li::before { content: ""; position: absolute; left: -27px; top: 7px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+.timeline li:last-child { padding-bottom: 0; }
+.timeline .t { font-weight: 600; font-size: 18px; }
+.timeline .o { color: var(--muted); }
+.timeline .d { font-family: var(--f-mono); font-size: 13px; color: var(--muted); }
+
+.tablewrap { overflow-x: auto; border-top: 1px solid var(--line); }
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { text-align: left; padding: 14px 16px 14px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+.profiles { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.profile { border-radius: 24px; padding: 22px; display: grid; gap: 8px; min-width: 0; }
+.profile b { font-family: var(--f-display); font-size: 22px; font-weight: 600; }
+.profile .ph { overflow-wrap: anywhere; justify-self: start; }
+a.profile { color: var(--fg); text-decoration: none; }
+.profile .handle { color: var(--muted); font-family: var(--f-mono); font-size: 13px; overflow-wrap: anywhere; }
+a.profile:hover .handle { color: var(--accent); }
+
+.contact { border-radius: 32px; padding: clamp(24px, 5vw, 64px); display: grid; gap: 20px; }
+.contact h2 { font-family: var(--f-display); font-weight: 600; font-size: clamp(32px, 5.4vw, 68px); line-height: 1; letter-spacing: -0.04em; margin: 0; max-width: 18ch; text-wrap: balance; }
+.contact .big { font-family: var(--f-display); font-size: clamp(22px, 4vw, 34px); font-weight: 600; overflow-wrap: anywhere; }
+
+footer { border-top: 1px solid var(--line); padding-block: 22px 36px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; font-size: 14px; color: var(--muted); }
+footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+footer a { color: var(--muted); }
+
+/* Liquid layer: drifting light behind the glass, soft highlights on glass, calmer blur on weaker devices */
+:root { --blur: 22px; }
+.lite { --blur: 10px; }
+.liquid { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+.blob { position: absolute; border-radius: 50%; filter: blur(46px); opacity: 0.8; will-change: transform; }
+.b1 { width: 46vmax; height: 46vmax; left: 50%; top: -14%; background: radial-gradient(circle at 40% 40%, var(--glow1), transparent 68%); }
+.b2 { width: 40vmax; height: 40vmax; left: -10%; bottom: -26%; background: radial-gradient(circle at 50% 50%, var(--glow2), transparent 68%); }
+.b3 { width: 26vmax; height: 26vmax; left: 34%; top: 30%; background: radial-gradient(circle at 50% 50%, var(--glow1), transparent 70%); opacity: 0.55; }
+@keyframes drift1 { to { transform: translate3d(-8vmax, 6vmax, 0) scale(1.15) rotate(20deg); } }
+@keyframes drift2 { to { transform: translate3d(9vmax, -5vmax, 0) scale(1.1) rotate(-16deg); } }
+@keyframes drift3 { to { transform: translate3d(-5vmax, -6vmax, 0) scale(1.25); } }
+.glass, .panel, .story-panel, .nav, .mobile { position: relative; }
+.glass::before, .panel::before, .story-panel::before, .nav::before { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: -1;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), transparent 38%), radial-gradient(120% 80% at 100% 100%, rgba(255, 255, 255, 0.04), transparent 60%); }
+.glass, .panel, .story-panel, .nav, .mobile, .spec { -webkit-backdrop-filter: blur(var(--blur)) saturate(1.3); backdrop-filter: blur(var(--blur)) saturate(1.3); }
+.panel, .story-panel { background: var(--glass); border: 1px solid var(--glass-edge); box-shadow: inset 0 1px 0 var(--glass-edge), 0 24px 60px -34px rgba(0, 0, 0, 0.6); }
+.panel { border-radius: 26px; padding: 14px 18px 10px; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .panel, .story-panel { background: var(--surface); } }
+
+.hero { border-bottom: 0; padding-bottom: calc(clamp(44px, 7vw, 88px) + 34px); }
+.specwrap { margin-top: -34px; position: relative; z-index: 2; }
+.spec { border: 1px solid var(--glass-edge); border-radius: 26px; overflow: hidden; box-shadow: inset 0 1px 0 var(--glass-edge), 0 24px 60px -34px rgba(0, 0, 0, 0.6); }
+
+/* Story: the text floats over the system */
+.story.stages { min-height: auto; }
+.story.stages, .story.static { overflow: hidden; }
+.story.stages .story-sticky { position: static; height: auto; padding-block: 56px 24px; }
+.story-stage { position: relative; display: grid; gap: 20px; align-items: center; }
+@media (min-width: 940px) {
+  .story-stage { grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 24px; }
+  .story-panel { grid-column: 1 / span 5; grid-row: 1; z-index: 2; }
+  .story-fig { grid-column: 5 / -1; grid-row: 1; z-index: 1; }
+}
+.story-panel { border-radius: 30px; padding: clamp(20px, 3vw, 32px); min-width: 0; }
+.story-fig { background: none; border: 0; box-shadow: none; -webkit-backdrop-filter: none; backdrop-filter: none; padding: 0; }
+.steps li { display: flex; align-items: center; padding: 0 0 0 12px; }
+.steps li::before { margin-right: 8px; }
+@media (min-width: 940px) { .story-fig .fignote { text-align: right; } }
+.steps button { all: unset; box-sizing: border-box; cursor: pointer; padding: 7px 12px 7px 0; font: inherit; color: inherit; }
+.steps button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.story.static .steps li { flex-wrap: wrap; }
+.story.static .steps li .d { flex-basis: 100%; padding: 0 12px 10px 0; margin-top: 0; }
+@media (max-width: 700px) {
+  .story-fig .t1 { font-size: 19px; }
+  .story-fig .t2 { font-size: 15px; }
+  .story h2 { font-size: 34px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .b1 { animation: drift1 22s ease-in-out infinite alternate; }
+  .b2 { animation: drift2 28s ease-in-out infinite alternate; }
+  .b3 { animation: drift3 18s ease-in-out infinite alternate; }
+  .lite .blob { animation: none; }
+}
+
+/* About, certificates */
+.about { display: grid; gap: 28px; }
+@media (min-width: 760px) { .about { grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 48px; align-items: start; } }
+.photo { aspect-ratio: 4 / 5; width: 100%; max-width: 340px; border: 1px dashed var(--ph); border-radius: 30px; background: var(--ph-bg); display: grid; place-items: center; padding: 16px; text-align: center; }
+.abouttext { min-width: 0; }
+.abouttext p { font-size: 18px; line-height: 1.7; color: var(--muted); max-width: 60ch; }
+.abouttext p:first-child { color: var(--fg); }
+.certs { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.cert { border-radius: 24px; padding: 16px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.cert h3 { font-size: 20px; letter-spacing: 0; }
+.cert p { margin: 0; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px; }
+.thumb { aspect-ratio: 4 / 3; border: 1px dashed var(--ph); border-radius: 16px; background: var(--ph-bg); display: grid; place-items: center; padding: 12px; text-align: center; }
+
+/* Photo, certificates, resume preview */
+.portrait { aspect-ratio: 4 / 5; width: 100%; max-width: 340px; border-radius: 30px; overflow: hidden; border: 1px solid var(--line); background: var(--surface); }
+.portrait img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cthumb { display: block; aspect-ratio: 800 / 573; border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: #fff; }
+.cthumb img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.cert h3 { font-size: 19px; line-height: 1.25; }
+.cert .cmeta { color: var(--fg); }
+.cert > a:last-child { font-size: 14px; }
+.resume-grid { display: grid; gap: 28px; align-items: start; }
+@media (min-width: 760px) { .resume-grid { grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: 48px; } }
+.rprev { display: block; border: 1px solid var(--line); border-radius: 20px; overflow: hidden; background: #fff; box-shadow: 0 24px 60px -34px rgba(0, 0, 0, 0.6); max-width: 420px; }
+.rprev img { display: block; width: 100%; height: auto; }
+.rtext { min-width: 0; display: grid; gap: 4px; align-content: start; }
+.rtext p { color: var(--muted); font-size: 17px; max-width: 46ch; }
+.timeline .o { max-width: 70ch; }
+
+@keyframes flow { to { stroke-dashoffset: -24; } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes fadein { to { opacity: 1; } }
+
+/* Motion: ambient pulses, signal drawing, one soft fade per section, gentle spring on buttons. All switch off for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .sig { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.8s ease forwards; animation-delay: calc(var(--d, 0) * 0.3s); }
+  .tv { opacity: 0; animation: fadein 0.6s ease forwards; animation-delay: 2.2s; }
+  .js .rv { opacity: 0.5; transform: translateY(10px); transition: opacity 0.6s ease, transform 0.6s ease; transition-delay: calc(var(--i, 0) * 70ms); }
+  .js .rv.in { opacity: 1; transform: none; }
+  .btn, .theme, .menu { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s, color 0.2s; }
+  .btn:hover { transform: translateY(-3px); }
+  .btn:active, .theme:active, .menu:active { transform: scale(0.96); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .wire { animation: none; }
+}
+</style>
+</head>
+<body>
+
+
+<div class="atmos" aria-hidden="true"></div>
+
+<div class="nav-wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="brand" href="#top" aria-label="A S Prajwal Bhat, back to top">ASP<span>.</span></a>
+    <div class="navlinks">
+      <a href="#system">System</a><a href="#work">Work</a><a href="#about">About</a><a href="#achievements">Achievements</a><a href="#resume">Resume</a><a href="#contact">Contact</a>
+    </div>
+    <div class="navtools">
+      <button class="theme" id="themeBtn" type="button">Theme</button>
+      <button class="menu" id="menuBtn" type="button" aria-expanded="false" aria-controls="mobileMenu">Menu</button>
+    </div>
+    <i class="prog" aria-hidden="true"></i>
+  </nav>
+  <div class="mobile" id="mobileMenu" hidden>
+    <a href="#system">System</a><a href="#work">Work</a><a href="#about">About</a><a href="#achievements">Achievements</a><a href="#resume">Resume</a><a href="#contact">Contact</a>
+  </div>
+</div>
+
+<header class="hero" id="top">
+  <div class="liquid" aria-hidden="true"><i class="blob b1"></i><i class="blob b2"></i><i class="blob b3"></i></div>
+  <canvas id="traces" aria-hidden="true"></canvas>
+  <div class="wrap hero-in">
+    <p class="kicker">Electronics and Communication Engineering, BIT Bengaluru</p>
+    <h1>A S Prajwal<br><em>Bhat</em></h1>
+    <p class="lead"><strong>FPGA, RTL, RISC-V and embedded systems.</strong> I build digital hardware and the tools around it: a pipelined RISC-V SoC with image accelerators, a compiler from a custom language to Verilog, and ESP32 prototypes.</p>
+    <div class="row">
+      <a class="btn" href="#system">Explore the work</a>
+      <a class="btn ghost" href="#resume">Resume</a>
+      <a class="btn ghost" href="#contact">Contact</a>
+    </div>
+    <div class="timing panel">
+      <p class="cap">Signal capture, illustration. The bus carries ASP as ASCII.</p>
+      <div class="scroll"><svg id="tsvg" viewBox="0 0 640 184" role="img" aria-label="Timing diagram with clock, reset, valid and an 8-bit data bus carrying the hex values 41, 53 and 50."></svg></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap specwrap">
+  <dl class="spec">
+    <div><dt>Degree</dt><dd>B.E. Electronics and Communication</dd></div>
+    <div><dt>Institute</dt><dd>Bangalore Institute of Technology</dd></div>
+    <div><dt>Graduating</dt><dd>June 2027</dd></div>
+    <div><dt>CGPA</dt><dd>8.5 out of 10, no backlogs</dd></div>
+    <div><dt>Based in</dt><dd>Bengaluru, India</dd></div>
+  </dl>
+</div>
+
+<section class="story" id="system" aria-labelledby="storyTitle">
+  <div class="story-sticky">
+    <div class="rings" aria-hidden="true"><i class="ring r1"></i><i class="ring r2"></i><i class="ring r3"></i></div>
+    <div class="wrap">
+      <div class="story-stage">
+        <div class="story-panel">
+          <p class="eyebrow">The major project, block by block</p>
+          <h2 id="storyTitle">How the SoC fits together</h2>
+          <p class="storytext" id="storyText" aria-live="polite"></p>
+          <ol class="steps" id="steps">
+            <li><button type="button">Fetch and execute</button><span class="d">The 5-stage RISC-V core runs the firmware.</span></li>
+            <li><button type="button">Connect</button><span class="d">An AXI4-Lite bridge and MMIO bus link the core to the accelerators and the UART.</span></li>
+            <li><button type="button">Accelerate</button><span class="d">A DCT accelerator transforms 8x8 image blocks and a LeNet-5 CNN classifies the result.</span></li>
+            <li><button type="button">Input and output</button><span class="d">A shared Block RAM holds the data. An image goes in over UART and a class comes out.</span></li>
+          </ol>
+        </div>
+        <div class="story-fig">
+          <svg id="socFig" viewBox="0 0 560 320" role="group" aria-label="Block diagram of the SoC. Select a block for details.">
+              <rect class="blk dash" x="10" y="10" width="540" height="300"/>
+              <text class="t2" x="24" y="32">Blackboard, Zynq-7007S</text>
+              <g class="sg" data-step="0">
+                <g class="blkg" data-id="core" tabindex="0" role="button" aria-label="RISC-V core">
+                  <rect class="blk hot" x="28" y="70" width="150" height="110"/>
+                  <text class="t1" x="103" y="120" text-anchor="middle">RISC-V core</text>
+                  <text class="t2" x="103" y="140" text-anchor="middle">pipelined</text>
+                </g>
+              </g>
+              <g class="sg" data-step="1">
+                <path class="wire" d="M178 125 H225"/>
+                <g class="blkg" data-id="bus" tabindex="0" role="button" aria-label="AXI4-Lite bridge, MMIO bus and BRAM arbiter">
+                  <rect class="blk" x="225" y="55" width="34" height="234"/>
+                  <text class="t2" x="242" y="172" text-anchor="middle" transform="rotate(-90 242 172)">AXI4-Lite, MMIO, BRAM</text>
+                </g>
+              </g>
+              <g class="sg" data-step="2">
+                <path class="wire" d="M259 79 H300"/><path class="wire" d="M259 141 H300"/>
+                <g class="blkg" data-id="dct" tabindex="0" role="button" aria-label="DCT accelerator">
+                  <rect class="blk hot" x="300" y="55" width="210" height="48"/>
+                  <text class="t1" x="405" y="76" text-anchor="middle">DCT accelerator</text>
+                  <text class="t2" x="405" y="93" text-anchor="middle">image compression</text>
+                </g>
+                <g class="blkg" data-id="cnn" tabindex="0" role="button" aria-label="CNN accelerator">
+                  <rect class="blk hot" x="300" y="117" width="210" height="48"/>
+                  <text class="t1" x="405" y="138" text-anchor="middle">CNN accelerator</text>
+                  <text class="t2" x="405" y="155" text-anchor="middle">image classification</text>
+                </g>
+              </g>
+              <g class="sg" data-step="3">
+                <path class="wire" d="M259 203 H300"/><path class="wire" d="M259 265 H300"/>
+                <g class="blkg" data-id="bram" tabindex="0" role="button" aria-label="Block RAM">
+                  <rect class="blk" x="300" y="179" width="210" height="48"/>
+                  <text class="t1" x="405" y="200" text-anchor="middle">Block RAM</text>
+                  <text class="t2" x="405" y="217" text-anchor="middle">on-chip memory</text>
+                </g>
+                <g class="blkg" data-id="uart" tabindex="0" role="button" aria-label="UART">
+                  <rect class="blk" x="300" y="241" width="210" height="48"/>
+                  <text class="t1" x="405" y="262" text-anchor="middle">UART</text>
+                  <text class="t2" x="405" y="279" text-anchor="middle">image in, class out</text>
+                </g>
+              </g>
+              <circle class="pkt" r="4.5" cx="0" cy="0" style="display:none"/>
+            </svg>
+          <p class="fignote">Simplified block diagram. Select any block once it appears.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap">
+  <main>
+    <section id="work">
+      <div class="sechead rv">
+        <div><p class="eyebrow">Work</p><h2>Hardware, compilers and embedded builds</h2></div>
+        <p>A RISC-V SoC, a hardware compiler, a surveillance system and ESP32 builds, with the design and tools behind each.</p>
+      </div>
+
+      <article class="project glass rv">
+        <div class="copy">
+          <span class="meta">B.E. major project, team of four, in progress</span>
+          <h3>Pipelined RISC-V SoC for Edge Vision Intelligence</h3>
+          <p>A 5-stage pipelined RISC-V processor with forwarding, hazard detection and hardware multiply and divide, plus two accelerators on one chip: an 8x8 block DCT for image compression and a LeNet-5 CNN for image classification. It targets the Real Digital Blackboard, a Zynq-7007S board, with a 100 MHz clock.</p>
+          <p>A Vivado testbench runs the whole path in simulation. It sends a 32x32 image over UART, passes it through the DCT and the CNN, and reads the predicted class back over UART. The CNN uses int8 quantized LeNet-5 weights.</p>
+          <ul class="tags"><li>RISC-V</li><li>Verilog</li><li>AXI4-Lite</li><li>BRAM</li><li>UART</li><li>LeNet-5</li><li>FPGA</li><li>Vivado</li></ul>
+        </div>
+        <dl class="specs">
+          <div><dt>Target</dt><dd>Real Digital Blackboard (Zynq-7007S), 100 MHz clock</dd></div>
+          <div><dt>Language</dt><dd>Verilog</dd></div>
+          <div><dt>Accelerators</dt><dd>8x8 block DCT, LeNet-5 CNN with int8 weights</dd></div>
+          <div><dt>Bus and memory</dt><dd>AXI4-Lite bridge to an MMIO bus, shared BRAM with an arbiter</dd></div>
+          <div><dt>Interface</dt><dd>UART, image in and class out</dd></div>
+          <div><dt>Core</dt><dd>5-stage pipeline, forwarding, hazard detection, multiply and divide</dd></div>
+        </dl>
+      </article>
+
+      <article class="project glass rv">
+        <div class="copy">
+          <span class="meta">Open source, IEEE CEDA</span>
+          <h3>EDA Logic Gate Compiler</h3>
+          <p>A compiler pipeline of about 2,300 lines of C that translates a custom hardware description language, written in .eda files, into synthesizable Verilog. It comes with GUI tools, browser-based editors and a README.</p>
+          <p>A technical manual is being verified line by line against the source code.</p>
+          <ul class="tags"><li>C</li><li>Python</li><li>Tkinter</li><li>Compilers</li><li>Verilog</li><li>EDA</li><li>Git</li></ul>
+          <div class="links2"><a href="https://github.com/AS-Prajwal-Bhat/EDA-Logic-Gate-Compiler" rel="noopener">View on GitHub</a></div>
+        </div>
+        <div class="fig">
+          <svg viewBox="0 0 560 210" role="img" aria-label="Flow from custom HDL source files through the C compiler to synthesizable Verilog, with GUI tools and browser editors alongside.">
+            <rect class="blk" x="18" y="60" width="140" height="66"/>
+            <text class="t1" x="88" y="88" text-anchor="middle">Custom HDL</text>
+            <text class="t2" x="88" y="108" text-anchor="middle">.eda source</text>
+            <rect class="blk hot" x="210" y="60" width="140" height="66"/>
+            <text class="t1" x="280" y="88" text-anchor="middle">C compiler</text>
+            <text class="t2" x="280" y="108" text-anchor="middle">about 2,300 lines</text>
+            <rect class="blk" x="402" y="60" width="140" height="66"/>
+            <text class="t1" x="472" y="88" text-anchor="middle">Verilog</text>
+            <text class="t2" x="472" y="108" text-anchor="middle">synthesizable</text>
+            <path class="wire" d="M158 93 H202"/><polygon class="arrow" points="210,93 200,88 200,98"/>
+            <path class="wire" d="M350 93 H394"/><polygon class="arrow" points="402,93 392,88 392,98"/>
+            <rect class="blk dash" x="18" y="156" width="524" height="38"/>
+            <text class="t2" x="280" y="179" text-anchor="middle">GUI tools and browser-based editors</text>
+            <path class="solid" d="M280 126 V156"/>
+          </svg>
+        </div>
+      </article>
+
+      <article class="project glass rv">
+        <div class="copy">
+          <span class="meta">Embedded and vision, MATLAB</span>
+          <h3>RoboSentinel</h3>
+          <p>An intelligent surveillance system that detects, recognizes and logs people in real time. MATLAB vision algorithms handle the face recognition, a web dashboard lets you monitor activity and manage users, and embedded firmware handles the control logic and real-time decisions.</p>
+          <ul class="tags"><li>MATLAB</li><li>Face recognition</li><li>Embedded firmware</li><li>Web dashboard</li></ul>
+          <div class="links2"><a href="https://github.com/AS-Prajwal-Bhat/RoboSentinel" rel="noopener">View on GitHub</a></div>
+        </div>
+        <dl class="specs">
+          <div><dt>Vision</dt><dd>Face detection and recognition in MATLAB</dd></div>
+          <div><dt>Logging</dt><dd>People recognized are logged in real time</dd></div>
+          <div><dt>Dashboard</dt><dd>Web dashboard for activity and users</dd></div>
+          <div><dt>Firmware</dt><dd>Embedded control logic and real-time decisions</dd></div>
+        </dl>
+      </article>
+
+      <article class="project glass rv">
+        <div class="copy">
+          <span class="meta">Embedded, ESP32</span>
+          <h3>BIOHAPTIK</h3>
+          <p>A haptic feedback prototype that turns environmental audio and spatial information into tactile signals, using embedded sensing and vibration output.</p>
+          <ul class="tags"><li>ESP32</li><li>I2S</li><li>Haptics</li><li>Embedded</li><li>ML</li></ul>
+        </div>
+        <dl class="specs">
+          <div><dt>Platform</dt><dd>ESP32</dd></div>
+          <div><dt>Input</dt><dd>Environmental audio over I2S, spatial information</dd></div>
+          <div><dt>Output</dt><dd>Tactile vibration signals</dd></div>
+          <div><dt>Approach</dt><dd>Embedded sensing with machine learning</dd></div>
+        </dl>
+      </article>
+
+      <article class="project glass rv">
+        <div class="copy">
+          <span class="meta">Embedded, ESP32-CAM</span>
+          <h3>ESP32 Vision Rover</h3>
+          <p>An RC platform built on ESP32 and ESP32-CAM with live video streaming, browser control, telemetry and a web dashboard.</p>
+          <ul class="tags"><li>ESP32</li><li>ESP32-CAM</li><li>Web UI</li><li>Telemetry</li></ul>
+        </div>
+        <dl class="specs">
+          <div><dt>Platform</dt><dd>ESP32 and ESP32-CAM</dd></div>
+          <div><dt>Video</dt><dd>Live streaming</dd></div>
+          <div><dt>Control</dt><dd>From the browser</dd></div>
+          <div><dt>Dashboard</dt><dd>Web dashboard with telemetry</dd></div>
+        </dl>
+      </article>
+
+      <div class="mini">
+        <article class="card glass rv">
+          <span class="meta">Verilog, Vivado, EDA Playground</span>
+          <h3 style="font-size:24px">Verilog designs</h3>
+          <p>A Vedic multiplier checked against a standard multiplier in testbenches. A round robin arbiter that gives several requesters fair, cyclic access to a shared resource. A multi-phase traffic light controller built as a state machine and verified in simulation.</p>
+        </article>
+        <article class="card glass rv" style="--i:1">
+          <span class="meta">Python, sensors</span>
+          <h3 style="font-size:24px">IoT Smart Environment Monitoring</h3>
+          <p>A real-time pipeline that combines hardware sensors with Python data processing and structured anomaly logging.</p>
+        </article>
+        <article class="card glass rv" style="--i:2">
+          <span class="meta">Verilog</span>
+          <h3 style="font-size:24px">Electronic Voting Machine</h3>
+          <p>An electronic voting machine designed in Verilog while learning the language from scratch.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="sechead rv"><div><p class="eyebrow">About</p><h2>Student, builder and IEEE organizer</h2></div></div>
+      <div class="about rv">
+        <div class="portrait"><img src="assets/photo.jpg" alt="Portrait of A S Prajwal Bhat" width="800" height="1000"></div>
+        <div class="abouttext">
+          <p>I am a final-year Electronics and Communication Engineering student at Bangalore Institute of Technology, graduating in 2027. I like RTL design, simulation and verification in Verilog, and I have trained in the RTL to GDSII flow with Cadence tools. I also build embedded prototypes on ESP32 and write the software tools that connect the pieces.</p>
+          <p>At college I am General Secretary of the IEEE Student Branch, Secretary of the IEEE CEDA and CAS Societies, and a Placement Coordinator. I led a college-wide Verilog Design Competition and helped run the SmartEco+ Design Hackathon.</p>
+          <p>I am looking for an FPGA internship in RTL design, simulation and verification.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="toolbox">
+      <div class="sechead rv"><div><p class="eyebrow">Toolbox</p><h2>What I work with</h2></div></div>
+      <div class="tools">
+        <div class="tool rv"><h3>Hardware design</h3><ul><li>Verilog, RTL and FSM design</li><li>Testbenches and simulation</li><li>Xilinx Vivado, EDA Playground</li><li>Cadence tools, RTL to GDSII training</li><li>Arbiters and arithmetic units</li></ul></div>
+        <div class="tool rv" style="--i:1"><h3>Embedded</h3><ul><li>ESP32 and ESP32-CAM</li><li>Arduino and 8051</li><li>Sensor interfacing</li><li>Real-time firmware</li><li>Hardware and software integration</li></ul></div>
+        <div class="tool rv" style="--i:2"><h3>Software</h3><ul><li>C, C++ and Python</li><li>Basic SQL, Java and MATLAB</li><li>Data structures and algorithms</li><li>Git, GitHub and Linux</li></ul></div>
+      </div>
+    </section>
+
+    <section id="achievements">
+      <div class="sechead rv"><div><p class="eyebrow">Achievements and roles</p><h2>Leadership, internships and training</h2></div></div>
+      <ul class="timeline">
+        <li class="rv" style="--i:0"><span class="t">General Secretary</span><span class="o">IEEE Student Branch, Bangalore Institute of Technology</span><span class="o">Organized 4 to 5 technical workshops (TCL, Linux, VLSI) and hands-on competitions (Arduino, Verilog). Led a national-level hackathon with around 80 participants from across India.</span><span class="d">Aug 2025 to present</span></li>
+        <li class="rv" style="--i:1"><span class="t">Secretary</span><span class="o">IEEE CEDA Society and IEEE CAS Society, BIT Student Branch</span><span class="o">Coordinating technical design initiatives alongside branch-wide event leadership.</span><span class="d">Dec 2025 to present</span></li>
+        <li class="rv" style="--i:2"><span class="t">Placement Coordinator</span><span class="o">Bangalore Institute of Technology</span><span class="d">Current</span></li>
+        <li class="rv" style="--i:3"><span class="t">IoT Intern</span><span class="o">Emertxe (online)</span><span class="o">Project: Edge AI Based Smart EV Charging Station Optimizer.</span><span class="d">10 Aug to 16 Sep 2026</span></li>
+        <li class="rv" style="--i:4"><span class="t">RTL to GDSII using Cadence Tools</span><span class="o">5-day industry training, VLSIMINDS at BIT ECE</span><span class="d">Apr 2026</span></li>
+        <li class="rv" style="--i:5"><span class="t">Student Internship Program 3.0</span><span class="o">IEEE CASS Bangalore Chapter</span><span class="d">Oct to Dec 2025</span></li>
+        <li class="rv" style="--i:6"><span class="t">Winner, IoT and Embedded Systems with ESP32 Hackathon</span><span class="o">Exovian Robotics at BIT</span><span class="d">Oct 2025</span></li>
+        <li class="rv" style="--i:7"><span class="t">Associate Design Lead</span><span class="o">IEEE CEDA Society and IEEE CAS Society, BIT Student Branch</span><span class="o">Led a college-wide Verilog Design Competition and helped run the SmartEco+ Design Hackathon, with a prize pool of 30,000 rupees.</span><span class="d">Mar to Aug 2025</span></li>
+      </ul>
+      <p class="eyebrow rv" id="certificates" style="margin-top:56px">Certificates</p>
+      <div class="certs">
+        <article class="cert glass rv" style="--i:0"><a class="cthumb" href="docs/nptel-digital-design-with-verilog.pdf" aria-label="Open the Digital Design with Verilog certificate as a PDF"><img src="assets/certs/nptel-digital-design-with-verilog.jpg" alt="Certificate for Digital Design with Verilog" width="800" height="573" loading="lazy"></a><h3>Digital Design with Verilog</h3><p>NPTEL, IIT Guwahati</p><p class="cmeta">Jan to Apr 2025. Elite + Silver, 75%</p><a href="docs/nptel-digital-design-with-verilog.pdf">View certificate (PDF)</a></article>
+        <article class="cert glass rv" style="--i:1"><a class="cthumb" href="docs/nptel-cmos-digital-vlsi-design.pdf" aria-label="Open the CMOS Digital VLSI Design certificate as a PDF"><img src="assets/certs/nptel-cmos-digital-vlsi-design.jpg" alt="Certificate for CMOS Digital VLSI Design" width="800" height="573" loading="lazy"></a><h3>CMOS Digital VLSI Design</h3><p>NPTEL, IIT Roorkee</p><p class="cmeta">Jan to Mar 2026. Elite, 65%</p><a href="docs/nptel-cmos-digital-vlsi-design.pdf">View certificate (PDF)</a></article>
+        <article class="cert glass rv" style="--i:2"><a class="cthumb" href="docs/nielit-vlsi-for-beginners.pdf" aria-label="Open the VLSI for Beginners certificate as a PDF"><img src="assets/certs/nielit-vlsi-for-beginners.jpg" alt="Certificate for VLSI for Beginners" width="800" height="573" loading="lazy"></a><h3>VLSI for Beginners</h3><p>NIELIT Calicut, Chips to Startup Programme</p><p class="cmeta">10 to 14 Sep 2026. Certificate of participation, 5 days online</p><a href="docs/nielit-vlsi-for-beginners.pdf">View certificate (PDF)</a></article>
+        <article class="cert glass rv" style="--i:3"><a class="cthumb" href="docs/ieee-cass-student-internship-program-3.pdf" aria-label="Open the Student Internship Program 3.0 certificate as a PDF"><img src="assets/certs/ieee-cass-student-internship-program-3.jpg" alt="Certificate for Student Internship Program 3.0" width="800" height="573" loading="lazy"></a><h3>Student Internship Program 3.0</h3><p>IEEE CASS Bangalore Chapter</p><p class="cmeta">Oct to Dec 2025. Certificate of participation</p><a href="docs/ieee-cass-student-internship-program-3.pdf">View certificate (PDF)</a></article>
+        <article class="cert glass rv" style="--i:4"><a class="cthumb" href="docs/nptel-introduction-to-iot.pdf" aria-label="Open the Introduction to Internet of Things certificate as a PDF"><img src="assets/certs/nptel-introduction-to-iot.jpg" alt="Certificate for Introduction to Internet of Things" width="800" height="573" loading="lazy"></a><h3>Introduction to Internet of Things</h3><p>NPTEL, IIT Kharagpur</p><p class="cmeta">Jul to Oct 2025. Elite + Silver, 81%</p><a href="docs/nptel-introduction-to-iot.pdf">View certificate (PDF)</a></article>
+        <article class="cert glass rv" style="--i:5"><a class="cthumb" href="docs/nptel-joy-of-computing-python.pdf" aria-label="Open the The Joy of Computing using Python certificate as a PDF"><img src="assets/certs/nptel-joy-of-computing-python.jpg" alt="Certificate for The Joy of Computing using Python" width="800" height="573" loading="lazy"></a><h3>The Joy of Computing using Python</h3><p>NPTEL, IIT Madras</p><p class="cmeta">Jan to Apr 2025. Elite + Silver, 86%, Top 5% topper</p><a href="docs/nptel-joy-of-computing-python.pdf">View certificate (PDF)</a></article>
+        <article class="cert glass rv" style="--i:6"><a class="cthumb" href="docs/nptel-programming-in-c.pdf" aria-label="Open the Problem Solving Through Programming in C certificate as a PDF"><img src="assets/certs/nptel-programming-in-c.jpg" alt="Certificate for Problem Solving Through Programming in C" width="800" height="573" loading="lazy"></a><h3>Problem Solving Through Programming in C</h3><p>NPTEL, IIT Kharagpur</p><p class="cmeta">Jan to Apr 2026. Elite, 60%</p><a href="docs/nptel-programming-in-c.pdf">View certificate (PDF)</a></article>
+      </div>
+    </section>
+
+    <section id="resume">
+      <div class="sechead rv"><div><p class="eyebrow">Resume</p><h2>One page, readable here or as a PDF</h2></div></div>
+      <div class="resume-grid rv">
+        <a class="rprev" href="docs/A_S_Prajwal_Bhat_Resume.pdf" aria-label="Open the resume as a PDF"><img src="assets/resume-preview.jpg" alt="First page of the resume of A S Prajwal Bhat" width="1000" height="1415" loading="lazy"></a>
+        <div class="rtext">
+          <p>Education, skills, projects, internships and leadership roles on one page. The same content is on this site.</p>
+          <p>The public copy has no phone number. Email is the best way to reach me.</p>
+          <div class="row"><a class="btn" href="docs/A_S_Prajwal_Bhat_Resume.pdf">Open resume (PDF)</a></div>
+        </div>
+      </div>
+    </section>
+
+    
+
+    
+
+    <section id="contact" style="display:grid;gap:36px">
+      <div id="profiles">
+        <p class="eyebrow rv">Profiles</p>
+        <div class="profiles">
+        <a class="profile glass rv" href="https://github.com/AS-Prajwal-Bhat" rel="noopener"><b>GitHub</b><span class="handle">github.com/AS-Prajwal-Bhat</span></a>
+        <a class="profile glass rv" style="--i:1" href="https://www.linkedin.com/in/a-s-prajwal-bhat-aa3717296" rel="noopener"><b>LinkedIn</b><span class="handle">linkedin.com/in/a-s-prajwal-bhat-aa3717296</span></a>
+        <a class="profile glass rv" style="--i:2" href="https://ieee-collabratec.ieee.org/app/p/ASPrajwalBhat1180865" rel="noopener"><b>IEEE Collabratec</b><span class="handle">ieee-collabratec.ieee.org</span></a>
+      </div>
+      </div>
+      <div class="contact glass rv">
+        <p class="eyebrow" style="margin:0">Contact</p>
+        <h2>Open to FPGA internships in RTL design, simulation and verification.</h2>
+        <div class="big"><a href="mailto:prajwalbhat113@gmail.com">prajwalbhat113@gmail.com</a></div>
+        <p style="margin:0;color:var(--muted)">Bengaluru, India. Phone number is left off on purpose, because public numbers attract spam.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>&copy; 2026 A S Prajwal Bhat</span>
+    <nav aria-label="Legal">
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="terms.html">Terms and Conditions</a>
+    </nav>
+  </footer>
+</div>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  root.classList.add("js");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if ((navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4) || (navigator.deviceMemory && navigator.deviceMemory <= 4)) root.classList.add("lite");
+
+  /* Scroll reveal */
+  var els = document.querySelectorAll(".rv");
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.06 });
+    els.forEach(function (el) { io.observe(el); });
+  } else {
+    els.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  /* Hero circuit traces */
+  var cv = document.getElementById("traces"), ctx = cv.getContext("2d");
+  var W = 0, H = 0, dpr = 1, paths = [], colors = { trace: "rgba(96,170,135,.3)", pulse: "#f0c35e" };
+  var running = false, last = 0, onScreen = true, boost = 0;
+  function readColors() {
+    var cs = getComputedStyle(root);
+    colors.trace = cs.getPropertyValue("--trace").trim() || colors.trace;
+    colors.pulse = cs.getPropertyValue("--pulse").trim() || colors.pulse;
+  }
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      var t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function build() {
+    var r = cv.parentElement.getBoundingClientRect();
+    W = Math.max(1, Math.floor(r.width)); H = Math.max(1, Math.floor(r.height));
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    cv.width = W * dpr; cv.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var g = 22, rand = rng(7 + W), n = Math.max(10, Math.min(34, Math.round(W / (root.classList.contains("lite") ? 70 : 42))));
+    paths = [];
+    for (var i = 0; i < n; i++) {
+      var x = Math.round(rand() * (W / g)) * g, y = Math.round(rand() * (H / g)) * g;
+      var pts = [[x, y]], dir = rand() < 0.5 ? 0 : 1, steps = 4 + Math.floor(rand() * 5);
+      for (var s = 0; s < steps; s++) {
+        var len = (2 + Math.floor(rand() * 5)) * g, sign = rand() < 0.7 ? 1 : -1, mode = rand();
+        if (mode < 0.2) { x += sign * len * 0.7; y += (rand() < 0.5 ? 1 : -1) * len * 0.7; }
+        else if (dir === 0) { x += sign * len; } else { y += sign * len; }
+        x = Math.max(0, Math.min(W, x)); y = Math.max(0, Math.min(H, y));
+        pts.push([x, y]); dir = 1 - dir;
+      }
+      var cum = [0], total = 0;
+      for (var k = 1; k < pts.length; k++) { total += Math.hypot(pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]); cum.push(total); }
+      if (total < 40) continue;
+      paths.push({ pts: pts, cum: cum, total: total, pos: rand() * total, speed: 30 + rand() * 50 });
+    }
+  }
+  function pointAt(p, d) {
+    d = ((d % p.total) + p.total) % p.total;
+    for (var k = 1; k < p.cum.length; k++) {
+      if (d <= p.cum[k]) {
+        var seg = p.cum[k] - p.cum[k - 1] || 1, t = (d - p.cum[k - 1]) / seg;
+        return [p.pts[k - 1][0] + (p.pts[k][0] - p.pts[k - 1][0]) * t, p.pts[k - 1][1] + (p.pts[k][1] - p.pts[k - 1][1]) * t];
+      }
+    }
+    return p.pts[p.pts.length - 1];
+  }
+  function draw(withPulses) {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1.4; ctx.lineJoin = "round"; ctx.strokeStyle = colors.trace;
+    paths.forEach(function (p) {
+      ctx.beginPath();
+      p.pts.forEach(function (q, i) { if (i === 0) ctx.moveTo(q[0], q[1]); else ctx.lineTo(q[0], q[1]); });
+      ctx.stroke();
+      [p.pts[0], p.pts[p.pts.length - 1]].forEach(function (q) { ctx.beginPath(); ctx.arc(q[0], q[1], 3.2, 0, 6.2832); ctx.stroke(); });
+    });
+    if (!withPulses) return;
+    ctx.fillStyle = colors.pulse;
+    paths.forEach(function (p) {
+      for (var j = 0; j < 7; j++) {
+        var q = pointAt(p, p.pos - j * 5);
+        ctx.globalAlpha = 0.9 - j * 0.13;
+        ctx.beginPath(); ctx.arc(q[0], q[1], 2.4 - j * 0.2, 0, 6.2832); ctx.fill();
+      }
+    });
+    ctx.globalAlpha = 1;
+  }
+  function frame(t) {
+    if (!running) return;
+    var dt = Math.min(0.05, (t - last) / 1000 || 0); last = t;
+    boost *= 0.95;
+    paths.forEach(function (p) { p.pos += p.speed * (1 + boost) * dt; });
+    draw(true);
+    requestAnimationFrame(frame);
+  }
+  function start() { if (reduce || running || !onScreen || document.hidden) return; running = true; last = performance.now(); requestAnimationFrame(frame); }
+  function stop() { running = false; }
+  function refresh() { readColors(); if (!running) draw(false); }
+  readColors(); build(); draw(false); start();
+  if ("IntersectionObserver" in window) {
+    new IntersectionObserver(function (e) { onScreen = e[0].isIntersecting; if (onScreen) start(); else stop(); }).observe(cv.parentElement);
+  }
+  document.addEventListener("visibilitychange", function () { if (document.hidden) stop(); else start(); });
+  var rt;
+  window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { build(); if (!running) draw(false); }, 150); });
+  if (window.matchMedia) {
+    var mq = window.matchMedia("(prefers-color-scheme: dark)");
+    if (mq.addEventListener) mq.addEventListener("change", refresh);
+  }
+
+  /* Hero timing diagram */
+  (function () {
+    var svg = document.getElementById("tsvg"); if (!svg) return;
+    var x0 = 64, w = 40, N = 14, xe = x0 + N * w;
+    var clk = "M" + x0 + " 34";
+    for (var i = 0; i < N; i++) { var x = x0 + i * w; clk += " V14 H" + (x + 20) + " V34 H" + (x + 40); }
+    var bounds = [224, 304, 384, 464], vals = ["0x41", "0x53", "0x50"], hi = 146, lo = 166, mid = 156, sl = 6;
+    var out = '<text class="tl" x="0" y="28">CLK</text><text class="tl" x="0" y="72">RST_N</text><text class="tl" x="0" y="116">VALID</text><text class="tl" x="0" y="160">DATA[7:0]</text>';
+    out += '<path class="sig clk" pathLength="1" style="--d:0" d="' + clk + '"/>';
+    out += '<path class="sig" pathLength="1" style="--d:1" d="M64 78 H144 V58 H' + xe + '"/>';
+    out += '<path class="sig" pathLength="1" style="--d:2" d="M64 122 H224 V102 H464 V122 H' + xe + '"/>';
+    out += '<path class="sig bus" pathLength="1" style="--d:3" d="M64 ' + mid + ' H224"/>';
+    out += '<path class="sig bus" pathLength="1" style="--d:3" d="M464 ' + mid + ' H' + xe + '"/>';
+    for (var k = 0; k < 3; k++) {
+      var a = bounds[k], b = bounds[k + 1];
+      out += '<path class="sig bus" pathLength="1" style="--d:3" d="M' + a + " " + mid + " L" + (a + sl) + " " + hi + " H" + (b - sl) + " L" + b + " " + mid + " L" + (b - sl) + " " + lo + " H" + (a + sl) + ' Z"/>';
+      out += '<text class="tv" x="' + ((a + b) / 2) + '" y="' + (mid + 4) + '" text-anchor="middle">' + vals[k] + "</text>";
+    }
+    svg.innerHTML = out;
+  })();
+
+  /* Story: pinned scroll on large screens, tap-through stages on phones, everything visible for reduced motion */
+  (function () {
+    var story = document.getElementById("system"), soc = document.getElementById("socFig"), txt = document.getElementById("storyText");
+    var lis = document.querySelectorAll("#steps li"), btns = document.querySelectorAll("#steps button");
+    var groups = soc.querySelectorAll(".sg"), rings = document.querySelectorAll(".ring");
+    var STEPS = [
+      "<b>Fetch and execute.</b> The 5-stage RISC-V core runs the firmware.",
+      "<b>Connect.</b> An AXI4-Lite bridge and MMIO bus link the core to the accelerators and the UART.",
+      "<b>Accelerate.</b> A DCT accelerator transforms 8x8 image blocks and a LeNet-5 CNN classifies the result.",
+      "<b>Input and output.</b> A shared Block RAM holds the data. An image goes in over UART and a class comes out."
+    ];
+    var NOTES = {
+      core: ["RISC-V core", "A 5-stage pipelined core with forwarding, hazard detection and hardware multiply and divide, written in Verilog."],
+      bus: ["Bus and arbiter", "An AXI4-Lite bridge feeds an MMIO bus. The CPU, the DCT and the CNN share one BRAM through an arbiter."],
+      dct: ["DCT accelerator", "Fixed-point 8x8 block DCT. A frame controller runs it over a 32x32 image as 16 blocks."],
+      cnn: ["CNN accelerator", "LeNet-5 inference with int8 quantized weights. It reads the DCT output and returns a predicted class from 0 to 9."],
+      bram: ["Block RAM", "On-chip memory shared through an arbiter. The CPU has priority, then the DCT, then the CNN."],
+      uart: ["UART", "Serial link at 115200 baud in the testbench. A 32x32 image goes in and the predicted class comes back."]
+    };
+    var Y = { dct: 79, cnn: 141, bram: 203, uart: 265 }, pkt = soc.querySelector(".pkt"), raf = 0, stage = -1, mode = "", auto = 0, seen = false;
+    var mqCompact = window.matchMedia("(max-width: 700px)");
+
+    function setStage(n) {
+      if (n === stage) return;
+      stage = n;
+      groups.forEach(function (g) { var on = Number(g.getAttribute("data-step")) <= n; g.classList.toggle("on", on); g.inert = !on; });
+      lis.forEach(function (li, i) { li.classList.toggle("cur", i === n); });
+      btns.forEach(function (b, i) { if (i === n) b.setAttribute("aria-current", "step"); else b.removeAttribute("aria-current"); });
+      soc.querySelectorAll(".blkg").forEach(function (b) { b.classList.remove("sel"); });
+      if (mode !== "static") txt.innerHTML = STEPS[n];
+    }
+    function update() {
+      if (mode !== "pinned") return;
+      var r = story.getBoundingClientRect(), max = Math.max(1, r.height - window.innerHeight);
+      var p = Math.min(1, Math.max(0, -r.top / max));
+      setStage(p > 0.78 ? 3 : p > 0.52 ? 2 : p > 0.26 ? 1 : 0);
+      rings.forEach(function (x, i) { x.style.transform = "translate(-50%,-50%) scale(" + (1 + p * (0.3 + i * 0.16)) + ") rotate(" + (p * (i % 2 ? 12 : -8)) + "deg)"; });
+    }
+    function applyMode() {
+      var m = reduce ? "static" : (mqCompact.matches ? "stages" : "pinned");
+      soc.setAttribute("viewBox", mqCompact.matches ? "0 0 560 320" : "-60 0 620 320");
+      if (m === mode) return;
+      mode = m; stage = -1; clearInterval(auto);
+      story.classList.toggle("static", m === "static");
+      story.classList.toggle("stages", m === "stages");
+      if (m === "static") { setStage(3); txt.textContent = "Select any block for details."; }
+      else { setStage(0); if (m === "pinned") update(); }
+    }
+    function autoplay() {
+      if (mode !== "stages" || seen) return;
+      seen = true;
+      auto = setInterval(function () { if (stage >= 3) { clearInterval(auto); return; } setStage(stage + 1); }, 1700);
+    }
+    btns.forEach(function (b, i) {
+      b.addEventListener("click", function () {
+        clearInterval(auto);
+        if (mode === "pinned") {
+          var r = story.getBoundingClientRect(), max = Math.max(1, r.height - window.innerHeight);
+          window.scrollTo({ top: window.scrollY + r.top + max * [0.05, 0.31, 0.57, 0.83][i], behavior: "smooth" });
+        } else if (mode === "stages") { setStage(i); }
+      });
+    });
+    function run(y) {
+      cancelAnimationFrame(raf);
+      var pts = [[178, 125], [242, 125], [242, y], [300, y]], seg = [], tot = 0;
+      for (var i = 1; i < pts.length; i++) { var l = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(l); tot += l; }
+      var t0 = performance.now(), dur = 900;
+      pkt.style.display = "block";
+      (function step(t) {
+        var f = Math.min(1, (t - t0) / dur), d = f * tot, i = 0;
+        while (i < seg.length - 1 && d > seg[i]) { d -= seg[i]; i++; }
+        var u = seg[i] ? Math.min(1, d / seg[i]) : 1;
+        pkt.setAttribute("cx", pts[i][0] + (pts[i + 1][0] - pts[i][0]) * u);
+        pkt.setAttribute("cy", pts[i][1] + (pts[i + 1][1] - pts[i][1]) * u);
+        if (f < 1) raf = requestAnimationFrame(step); else setTimeout(function () { pkt.style.display = "none"; }, 250);
+      })(t0);
+    }
+    function pick(g) {
+      clearInterval(auto);
+      var id = g.getAttribute("data-id");
+      soc.querySelectorAll(".blkg").forEach(function (n) { n.classList.toggle("sel", n === g); });
+      txt.innerHTML = "<b>" + NOTES[id][0] + ".</b> " + NOTES[id][1];
+      if (Y[id] && !reduce) run(Y[id]);
+    }
+    soc.querySelectorAll(".blkg").forEach(function (g) {
+      g.addEventListener("click", function () { pick(g); });
+      g.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(g); } });
+    });
+    if (mqCompact.addEventListener) mqCompact.addEventListener("change", applyMode);
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (e) { if (e[0].isIntersecting) autoplay(); }, { threshold: 0.35 }).observe(story);
+    }
+    window.__storyUpdate = update;
+    applyMode();
+  })();
+
+  /* Compiler demo shell. Fill EXAMPLES with real runs: { name, input, output } */
+  (function () {
+    var EXAMPLES = [];
+    var tabs = document.getElementById("demoTabs"), inEl = document.getElementById("demoIn"), outEl = document.getElementById("demoOut");
+    var btn = document.getElementById("compileBtn"), noteEl = document.getElementById("demoNote"), cur = 0, timer;
+    if (!tabs) return;
+    function show(i) {
+      cur = i; clearInterval(timer);
+      Array.prototype.forEach.call(tabs.children, function (b, j) { b.setAttribute("aria-selected", j === i ? "true" : "false"); });
+      inEl.className = "code"; outEl.className = "code"; inEl.textContent = EXAMPLES[i].input; outEl.textContent = "";
+    }
+    if (!EXAMPLES.length) {
+      for (var n = 1; n <= 3; n++) { var b0 = document.createElement("button"); b0.className = "tab"; b0.type = "button"; b0.disabled = true; b0.textContent = "Example " + n; tabs.appendChild(b0); }
+      inEl.className = "code empty"; outEl.className = "code empty";
+      inEl.textContent = "Paste a real .eda example here."; outEl.textContent = "The compiler's real Verilog output appears here.";
+      btn.disabled = true; btn.setAttribute("aria-disabled", "true");
+      return;
+    }
+    noteEl.hidden = true;
+    EXAMPLES.forEach(function (ex, i) {
+      var b = document.createElement("button"); b.className = "tab"; b.type = "button"; b.setAttribute("role", "tab"); b.textContent = ex.name;
+      b.addEventListener("click", function () { show(i); }); tabs.appendChild(b);
+    });
+    btn.addEventListener("click", function () {
+      var lines = EXAMPLES[cur].output.split("\n"), k = 0; outEl.textContent = ""; clearInterval(timer);
+      if (reduce) { outEl.textContent = EXAMPLES[cur].output; return; }
+      timer = setInterval(function () { outEl.textContent += (k ? "\n" : "") + lines[k]; k++; if (k >= lines.length) clearInterval(timer); }, 45);
+    });
+    show(0);
+  })();
+
+  /* Scroll linked: progress line, drifting glow, faster pulses, story */
+  var lastY = window.scrollY, ticking = false;
+  function onScroll() {
+    var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+    root.style.setProperty("--p", h > 0 ? Math.min(1, Math.max(0, y / h)) : 0);
+    if (!reduce) {
+      root.style.setProperty("--sy", y + "px");
+      boost = Math.min(4, boost + Math.abs(y - lastY) / 140);
+      if (window.__storyUpdate) window.__storyUpdate();
+    }
+    lastY = y; ticking = false;
+  }
+  window.addEventListener("scroll", function () { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
+  window.addEventListener("resize", function () { if (window.__storyUpdate) window.__storyUpdate(); });
+  onScroll();
+
+  /* Mobile menu */
+  var menuBtn = document.getElementById("menuBtn"), menu = document.getElementById("mobileMenu");
+  menuBtn.addEventListener("click", function () {
+    var open = menu.hidden;
+    menu.hidden = !open;
+    menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+    menuBtn.textContent = open ? "Close" : "Menu";
+  });
+  menu.addEventListener("click", function (e) {
+    if (e.target.tagName === "A") { menu.hidden = true; menuBtn.setAttribute("aria-expanded", "false"); menuBtn.textContent = "Menu"; }
+  });
+
+  /* Theme toggle */
+  document.getElementById("themeBtn").addEventListener("click", function () {
+    var cur = root.getAttribute("data-theme");
+    if (!cur) cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    root.setAttribute("data-theme", cur === "dark" ? "light" : "dark");
+    refresh();
+  });
+})();
+</script>
+
+</body>
+</html>
